@@ -19,10 +19,12 @@ namespace ApiDay01
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
-           
-                
-            
+
+
+
+
             /////////////////
             builder.Services.AddDbContext<ApplicationDbContext>(opt=>
             {
