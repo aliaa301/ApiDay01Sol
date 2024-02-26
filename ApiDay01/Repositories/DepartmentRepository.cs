@@ -22,12 +22,15 @@ namespace ApiDay01.Repositories
 
         public Department GetById(int id)
         {
-            return _dbContext.Departments.FirstOrDefault(d => d.Id == id);
+            //return _dbContext.Departments.FirstOrDefault(d => d.Id == id);
+            return _dbContext.Departments.Include(d => d.Students).FirstOrDefault(d => d.Id == id);
         }
 
         public Department GetByName(string name)
         {
-            return _dbContext.Departments.FirstOrDefault(d => d.Name == name);
+            //return _dbContext.Departments.FirstOrDefault(d => d.Name == name);
+            return _dbContext.Departments.Include(d => d.Students).FirstOrDefault(d => d.Name == name);
+
         }
 
         public void Add(Department department)

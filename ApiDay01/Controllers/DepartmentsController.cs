@@ -34,7 +34,8 @@ namespace ApiDay01.Controllers
             return Ok(department);
         }
 
-        [HttpGet("name/{name}")]
+        [HttpGet]
+        [Route("{id:int}")]
         public IActionResult GetByName(string name)
         {
             var department = _departmentRepository.GetByName(name);
