@@ -30,6 +30,16 @@ namespace ApiDay01
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("con"));
             });
+
+            builder.Services.AddCors(option =>
+            {
+                option.AddPolicy("MyPolicy", crosPolicy =>
+                {
+                    crosPolicy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+                });
+            }
+                );
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,7 +50,8 @@ namespace ApiDay01
             }
 
             app.UseAuthorization();
-
+            app.UseStaticFiles();
+            app.UseCors("MyPolicy");
 
             app.MapControllers();
 
