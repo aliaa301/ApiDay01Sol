@@ -1,4 +1,5 @@
 ﻿using ApiDay01.CustomFilter;
+using ApiDay01.DTOs;
 using ApiDay01.Models;
 using ApiDay01.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -24,25 +25,48 @@ namespace ApiDay01.Controllers
             return Ok(departments);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id:int}")]
         public IActionResult GetById(int id)
         {
             var department = _departmentRepository.GetById(id);
             if (department == null)
+            {
                 return NotFound();
+            }
 
-            return Ok(department);
+            DeptWithStudsName deptWithStudsName = new DeptWithStudsName();
+            deptWithStudsName.Department_Number = department.Id;
+            deptWithStudsName.Department_Name = department.Name;
+            deptWithStudsName.Department_Manager = department.Manager;
+            foreach (var student in department.Students)
+            {
+                deptWithStudsName.Students_Name.Add(student.Name);
+            }
+
+            return Ok(deptWithStudsName);
         }
 
         [HttpGet]
-        [Route("{id:int}")]
+        [Route("{name:alpha}")]
         public IActionResult GetByName(string name)
         {
             var department = _departmentRepository.GetByName(name);
             if (department == null)
+            {
                 return NotFound();
+            }
 
-            return Ok(department);
+            DeptWithStudsName deptWithStudsName = new DeptWithStudsName();
+            deptWithStudsName.Department_Number = department.Id;
+            deptWithStudsName.Department_Name = department.Name;
+            deptWithStudsName.Department_Manager = department.Manager;
+            foreach (var student in department.Students)
+            {
+                deptWithStudsName.Students_Name.Add(student.Name);
+            }
+
+            return Ok(deptWithStudsName);
         }
 
         [HttpPost]
@@ -84,7 +108,8 @@ namespace ApiDay01.Controllers
            
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id:int}")]
         public IActionResult Delete(int id)
         {
             var department = _departmentRepository.GetById(id);

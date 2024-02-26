@@ -1,6 +1,7 @@
 ﻿using ApiDay01.Entity;
 using ApiDay01.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ApiDay01.Repositories
 {
@@ -15,17 +16,19 @@ namespace ApiDay01.Repositories
 
         public IEnumerable<Student> GetAll()
         {
-            return applicationDbContext.Students.ToList();
+            return applicationDbContext.Students.Include(std => std.Department).ToList();
         }
 
         public Student GetById(int id)
         {
-            return applicationDbContext.Students.FirstOrDefault(std => std.Id == id);
+            return applicationDbContext.Students.Include(std => std.Department).FirstOrDefault(s => s.Id == id);
         }
 
-        public IEnumerable<Student> GetByName(string name)
+        
+        public Student GetByName(string name)
         {
-            return applicationDbContext.Students.Where(std => std.Name == name).ToList();
+            return applicationDbContext.Students.Include(std => std.Department).FirstOrDefault(std => std.Name == name);
+
         }
 
         public void Add(Student student)
