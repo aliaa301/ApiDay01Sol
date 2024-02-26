@@ -1,45 +1,56 @@
-﻿using ApiDay01.Models;
+﻿using ApiDay01.Entity;
+using ApiDay01.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiDay01.Repositories
 {
     public class DepartmentRepository : IDepartmentRepository
     {
-        private List<Department> _departments = new List<Department>();
+        private readonly ApplicationDbContext _dbContext;
+
+
+
+        public DepartmentRepository(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         public IEnumerable<Department> GetAll()
         {
-            return _departments;
+            return _dbContext.Departments.ToList();
         }
 
         public Department GetById(int id)
         {
-            return _departments.FirstOrDefault(d => d.Id == id);
+            return _dbContext.Departments.FirstOrDefault(d => d.Id == id);
         }
 
         public Department GetByName(string name)
         {
-            return _departments.FirstOrDefault(d => d.Name == name);
+            return _dbContext.Departments.FirstOrDefault(d => d.Name == name);
         }
 
         public void Add(Department department)
         {
-            _departments.Add(department);
+            _dbContext.Departments.Add(department);
+            _dbContext.SaveChanges();
         }
 
         public void Update(Department department)
         {
-            var existingDepartment = _departments.FirstOrDefault(d => d.Id == department.Id);
-            if (existingDepartment != null)
-            {
-                existingDepartment.Name = department.Name;
-                existingDepartment.Location = department.Location;
-                existingDepartment.Manager = department.Manager;
-            }
+            _dbContext.Entry(department).State = EntityState.Modified;
+            _dbContext.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            _departments.RemoveAll(d => d.Id == id);
+            var department = _dbContext.Departments.Find(id);
+            if (department != null)
+            {
+                _dbContext.Departments.Remove(department);
+                _dbContext.SaveChanges();
+            }
         }
+
     }
 }

@@ -6,7 +6,7 @@ namespace ApiDay01.Models
     public class Department
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Department name is required.")]
         [UniqueDepartmentName]
         public string Name { get; set; }
         public string Location { get; set; }

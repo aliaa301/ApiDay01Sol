@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CustomFilter\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

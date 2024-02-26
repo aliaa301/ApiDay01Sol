@@ -10,6 +10,7 @@ namespace ApiDay01.Entity
 
         }
         public DbSet<Student> Students { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

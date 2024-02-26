@@ -1,4 +1,5 @@
-﻿using ApiDay01.Models;
+﻿using ApiDay01.CustomFilter;
+using ApiDay01.Models;
 using ApiDay01.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,6 @@ namespace ApiDay01.Controllers
             _departmentRepository = departmentRepository;
         }
 
-        // GET api/departments
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -24,20 +24,37 @@ namespace ApiDay01.Controllers
             return Ok(departments);
         }
 
-        // GET api/departments/5
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var department = _departmentRepository.GetById(id);
             if (department == null)
                 return NotFound();
+
             return Ok(department);
         }
 
-        // POST api/departments
+        [HttpGet("name/{name}")]
+        public IActionResult GetByName(string name)
+        {
+            var department = _departmentRepository.GetByName(name);
+            if (department == null)
+                return NotFound();
+
+            return Ok(department);
+        }
+
         [HttpPost]
+        [LocationFilter("EG", "USA")] // Example allowed locations
         public IActionResult Add([FromBody] Department department)
         {
+            //// Custom validation for unique department name
+            //var existingDepartment = _departmentRepository.GetByName(department.Name);
+            //if (existingDepartment != null)
+            //    return BadRequest("Department name must be unique.");
+
+            //_departmentRepository.Add(department);
+            //return Ok();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -46,30 +63,32 @@ namespace ApiDay01.Controllers
             _departmentRepository.Add(department);
             return CreatedAtAction(nameof(GetById), new { id = department.Id }, department);
         }
+    
 
-        // PUT api/departments/5
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] Department department)
+
+
+
+
+        [HttpPut]
+        [LocationFilter("EG", "USA")] // Example allowed locations
+        public IActionResult Update( Department department)
         {
-            if (id != department.Id)
-                return BadRequest();
-
-            var existingDepartment = _departmentRepository.GetById(id);
-            if (existingDepartment == null)
-                return NotFound();
-
-            _departmentRepository.Update(department);
-            return NoContent();
+            if(ModelState.IsValid)
+            {
+                _departmentRepository.Update(department);
+                return NoContent();
+            }
+            return BadRequest();
+           
+           
         }
 
-        // DELETE api/departments/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var department = _departmentRepository.GetById(id);
             if (department == null)
                 return NotFound();
-
             _departmentRepository.Delete(id);
             return Ok(department);
         }
